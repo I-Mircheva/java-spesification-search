@@ -1,21 +1,20 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.Customer;
-import com.example.demo.model.CustomerRepository;
-import com.example.demo.model.Pet;
+import com.example.demo.model.*;
+import com.google.common.base.Joiner;
 import com.querydsl.core.types.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Set;
-
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class CustomerController {
@@ -23,13 +22,33 @@ public class CustomerController {
     @Autowired
     CustomerRepository repository;
 
+    @RequestMapping(method = RequestMethod.GET, value = "/users")
+    @ResponseBody
+    public List<Customer> findAllBySpecification(@RequestParam(value = "search") String search) {
+        CustomerSpecification builder = new CustomerSpecification();
+        String operationSetExper = Joiner.on("|").join(SearchOperation.SIMPLE_OPERATION_SET);
+        Pattern pattern = Pattern.compile(
+                "(\\w+?)(" + operationSetExper + ")(\p{Punct}?)(\\w+?)(\p{Punct}?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        while (matcher.find()) {
+            builder.with(
+                    matcher.group(1),
+                    matcher.group(2),
+                    matcher.group(4),
+                    matcher.group(3),
+                    matcher.group(5));
+        }
+
+        Specification<Customer> spec = builder.build();
+        return dao.findAll(spec);
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/customers")
     public Iterable<Customer> find(@QuerydslPredicate(root = Customer.class) Predicate predicate, Pageable pageable,
                                    @RequestParam MultiValueMap<String, String> parameters) {
-//        System.out.println(Long.valueOf(parameters.get("age").get(0)));
-//        parameters.remove("age");
+
+        CustomerRepository.readParams(parameters);
         return repository.findAll(predicate, pageable);
-//        return repository.findByAgeLessThanEqual(Long.valueOf(parameters.get("age").get(0)));
     }
 
     @PostConstruct
