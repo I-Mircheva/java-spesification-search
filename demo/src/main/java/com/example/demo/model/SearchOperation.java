@@ -1,36 +1,15 @@
 package com.example.demo.model;
 
 public enum SearchOperation {
-    EQUALITY, NEGATION, GREATER_THAN, LESS_THAN, LIKE, STARTS_WITH, ENDS_WITH, CONTAINS;
+    EQUALITY("EQ"), NEGATION("NE"), GREATER_THAN("GT"), LESS_THAN("LT"), LIKE("LIKE"), STARTS_WITH("SW"), ENDS_WITH("EW"), CONTAINS("CON"), GREATER_OR_EQUALS("GOE");
 
-    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", "<", "~" };
+    private final String marker;
 
-    public static final String OR_PREDICATE_FLAG = "'";
+    SearchOperation(String marker) {
+        this.marker = marker;
+    }
 
-    public static final String ZERO_OR_MORE_REGEX = "*";
-
-    public static final String OR_OPERATOR = "OR";
-
-    public static final String AND_OPERATOR = "AND";
-
-    public static final String LEFT_PARANTHESIS = "(";
-
-    public static final String RIGHT_PARANTHESIS = ")";
-
-    public static SearchOperation getSimpleOperation(final char input) {
-        switch (input) {
-        case ':':
-            return EQUALITY;
-        case '!':
-            return NEGATION;
-        case '>':
-            return GREATER_THAN;
-        case '<':
-            return LESS_THAN;
-        case '~':
-            return LIKE;
-        default:
-            return null;
-        }
+    public String getMarker() {
+        return marker;
     }
 }
