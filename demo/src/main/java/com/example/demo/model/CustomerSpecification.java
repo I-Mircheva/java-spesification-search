@@ -39,7 +39,6 @@ public class CustomerSpecification implements Specification<Customer> {
 			}else {
 				path = ((From)path).join(levels[i]);
 			}
-
 		}
 
 		Predicate result;

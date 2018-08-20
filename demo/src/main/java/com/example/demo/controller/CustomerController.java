@@ -18,8 +18,8 @@ public class CustomerController {
     @ResponseBody
     public List<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters) {
         return repository.findAll(
-                CustomerSpecificationFactory.build(
-                        SearchCriteriaFactory.build(parameters)));
+                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
+//                CustomerSpecificationFactory.findLightDragons());
     }
 
 //    @RequestMapping(method = RequestMethod.GET, value = "/customers")
@@ -74,7 +74,7 @@ public class CustomerController {
         {
             Customer customer5 = new Customer("Michelle", "Dessler", 30L);
             ArrayList<Pet> pets = new ArrayList<>();
-            pets.add(new Pet("Joki", 10, "Snake"));
+            pets.add(new Pet("Jaki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
             customer5.setPets(pets);
             repository.save(customer5);
