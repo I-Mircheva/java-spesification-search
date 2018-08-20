@@ -18,8 +18,8 @@ public class CustomerController {
     @ResponseBody
     public List<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters) {
         return repository.findAll(
-                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
-//                CustomerSpecificationFactory.findLightDragons());
+//                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
+                CustomerSpecificationFactory.findLightDragons());
     }
 
 //    @RequestMapping(method = RequestMethod.GET, value = "/customers")
