@@ -17,18 +17,9 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.GET, value = "/customers")
     @ResponseBody
     public List<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters) {
-        return repository.findAll(
-                CustomerSpecificationFactory.findLightDragons());
+        return repository.findAll(PredicateFactory.build(parameters));
 //                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
     }
-
-//    @RequestMapping(method = RequestMethod.GET, value = "/customers")
-//    public Iterable<Customer> find(@QuerydslPredicate(root = Customer.class) Predicate predicate, Pageable pageable,
-//                                   @RequestParam MultiValueMap<String, String> parameters) {
-//
-//        CustomerRepository.readParams(parameters);
-//        return repository.findAll(predicate, pageable);
-//    }
 
     @PostConstruct
     public void prepareDB() {

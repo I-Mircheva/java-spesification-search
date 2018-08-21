@@ -2,6 +2,7 @@ package com.example.demo.model;
 
 public class SpecSearchCriteria {
 
+    private String joinPath;
     private String key;
     private SearchOperation operation;
     private Object value;
@@ -10,11 +11,20 @@ public class SpecSearchCriteria {
 
     }
 
-    public SpecSearchCriteria(final String key, final SearchOperation operation, final Object value) {
+    public SpecSearchCriteria(final String joinPath, final String key, final SearchOperation operation, final Object value) {
         super();
+        this.joinPath = joinPath;
         this.key = key;
         this.operation = operation;
         this.value = value;
+    }
+
+    public String getJoinPath() {
+        return joinPath;
+    }
+
+    public void setJoinPath(String joinPath) {
+        this.joinPath = joinPath;
     }
 
     public String getKey() {

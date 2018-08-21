@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import com.example.demo.model.Customer;
+
 import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.*;
 
@@ -20,7 +20,7 @@ public class CustomerSpecification implements Specification<Customer> {
 	@Override
 	public Predicate toPredicate(final Root<Customer> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
 
-		String[] levels = criteria.getKey().split("_");
+		String[] levels = criteria.getJoinPath().split(".");
 		Path path = null;
 		for(int i = 0; i < levels.length; i++) {
 			if(path == null) {
