@@ -1,11 +1,9 @@
 package com.example.demo.model;
 
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.repository.query.QueryLookupStrategy;
-
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.security.Key;
 import java.util.List;
 
 public class CustomerSpecificationFactory {
@@ -36,10 +34,8 @@ public class CustomerSpecificationFactory {
 //                where p.type = 'Cat'
 //                and p.name = 'Joki'
 
-                Path path1 = root.join("pets").get("type");
-                Path path2 = root.join("pets").get("name");
-
-                return criteriaBuilder.and(criteriaBuilder.equal(path1,"Cat"), criteriaBuilder.equal(path2,"Joki"));
+                Join<Customer, Pet> ys = root.join("pets");
+                return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
             }
 
         };
