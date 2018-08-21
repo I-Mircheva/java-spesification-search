@@ -35,7 +35,11 @@ public class CustomerSpecificationFactory {
 //                from customer c inner join pet p on p.customer_id = c.id
 //                where p.type = 'Cat'
 //                and p.name = 'Joki'
-                return null;
+
+                Path path1 = root.join("pets").get("type");
+                Path path2 = root.join("pets").get("name");
+
+                return criteriaBuilder.and(criteriaBuilder.equal(path1,"Cat"), criteriaBuilder.equal(path2,"Joki"));
             }
 
         };

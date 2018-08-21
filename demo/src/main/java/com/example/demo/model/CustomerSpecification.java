@@ -20,9 +20,6 @@ public class CustomerSpecification implements Specification<Customer> {
 	@Override
 	public Predicate toPredicate(final Root<Customer> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
 
-		//// https://stackoverflow.com/a/8987955
-		//// https://stackoverflow.com/a/8368461
-
 		String[] levels = criteria.getKey().split("_");
 		Path path = null;
 		for(int i = 0; i < levels.length; i++) {
