@@ -41,35 +41,23 @@ public class CustomerSpecification implements Specification<Customer> {
 		Predicate result;
 
 		switch (criteria.getOperation()) {
-		case EQUALITY:
-			result = builder.equal(path, criteria.getValue());
-			break;
-		case NEGATION:
-			result = builder.notEqual(path, criteria.getValue());
-			break;
-		case GREATER_THAN:
-			result = builder.greaterThan(path, criteria.getValue().toString());
-			break;
-		case GREATER_OR_EQUALS:
-			result = builder.greaterThanOrEqualTo(path, criteria.getValue().toString());
-			break;
-		case LESS_THAN:
-			result = builder.lessThan(path, criteria.getValue().toString());
-			break;
-		case LIKE:
-			result = builder.like(path, criteria.getValue().toString());
-			break;
-		case STARTS_WITH:
-			result = builder.like(path, criteria.getValue() + "%");
-			break;
-		case ENDS_WITH:
-			result = builder.like(path, "%" + criteria.getValue());
-			break;
-		case CONTAINS:
-			result = builder.like(path, "%" + criteria.getValue() + "%");
-			break;
-		default:
-			result = null;
+			case EQUALITY:
+				result = builder.equal(path, criteria.getValue());
+				break;
+			case GREATER_THAN:
+				result = builder.greaterThan(path, criteria.getValue().toString());
+				break;
+			case GREATER_OR_EQUALS:
+				result = builder.greaterThanOrEqualTo(path, criteria.getValue().toString());
+				break;
+			case LESS_OR_EQUALS:
+				result = builder.lessThanOrEqualTo(path, criteria.getValue().toString());
+				break;
+			case LESS_THAN:
+				result = builder.lessThan(path, criteria.getValue().toString());
+				break;
+			default:
+				result = null;
 		}
 
 		query.distinct(true); // Remove duplicates

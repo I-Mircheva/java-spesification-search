@@ -17,7 +17,7 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.GET, value = "/customers")
     @ResponseBody
     public List<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters) {
-        return repository.findAll(PredicateFactory.build(parameters));
+        return repository.findAll(PredicateFactory.build(parameters)); // TODO Pagable
 //                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
     }
 

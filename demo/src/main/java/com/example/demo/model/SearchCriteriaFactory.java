@@ -17,15 +17,16 @@ public class SearchCriteriaFactory {
     public static SpecSearchCriteria build(String key, List<String> value) {
         Map.Entry<String,SearchOperation> keyAndMarker = keyAndMarkerGeneration(key);
         if(keyAndMarker.getValue() != null) {
-            return new SpecSearchCriteria(keyAndMarker.getKey(), keyAndMarker.getValue(), value.get(0)); //removed Integer.valueOf(value.get(0))
+//            return new SpecSearchCriteria(keyAndMarker.getKey(), keyAndMarker.getValue(), value.get(0)); //removed Integer.valueOf(value.get(0))
         }
         return null;
     }
 
     private static Map.Entry<String,SearchOperation> keyAndMarkerGeneration(String key) {
         String[] pathAndMarker = key.split("-");
+//        String[] pathAndKey =pathAndMarker[0].split(".");
         if(pathAndMarker.length < 2) {
-            return new AbstractMap.SimpleEntry<>(pathAndMarker[0], SearchOperation.LIKE);
+            return new AbstractMap.SimpleEntry<>(pathAndMarker[0], SearchOperation.EQUALITY);
         }
         return new AbstractMap.SimpleEntry<>(pathAndMarker[0], operations.get(pathAndMarker[1]));
     }
