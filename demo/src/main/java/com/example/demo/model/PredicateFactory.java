@@ -3,8 +3,10 @@ package com.example.demo.model;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.MultiValueMap;
 
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.criteria.*;
 import java.util.*;
 
 import java.util.stream.Collectors;
@@ -37,6 +39,31 @@ public class PredicateFactory {
 
     public static Specification<Customer> groupSpec(List<SpecSearchCriteria> groupedSpecs) {
 
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("kote");
+        EntityManager em = emf.createEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
+        Root<Customer> customer = cq.from(Customer.class);
+
+        String[] levels = groupedSpecs.get(0).getJoinPath().split("\\.");
+        Path path = null;
+        for(int i = 0; i < levels.length; i++) {
+            if(path == null) {
+                if(i == levels.length-1){
+                    path = customer.get(levels[i]);
+                } else {
+                    path = customer.join(levels[i]);
+                }
+                continue;
+            }
+            if (i == levels.length - 1) {
+                path = path.get(levels[i]);
+            }else {
+                path = ((From)path).join(levels[i]);
+            }
+        }
+
 
         Specification<Customer> spec = (Specification<Customer>) (root, query, criteriaBuilder) -> {
 //                select c.*
@@ -51,63 +78,6 @@ public class PredicateFactory {
     }
 
 
-//    public static Predicate toPredicate(List<SpecSearchCriteria> params) {
-//
-//        EntityManager entityManager = null;
-//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//
-//        CriteriaQuery<Customer> query = criteriaBuilder.createQuery(Customer.class);
-//        Root root = query.from(Customer.class);
-//
-//        //        String[] levels = criteria.getJoinPath().split(".");
-////        Path path = null;
-////        for(int i = 0; i < levels.length; i++) {
-////            if(path == null) {
-////                if(i == levels.length-1){
-////                    path = root.get(levels[i]);
-////                } else {
-////                    path = root.join(levels[i]);
-////                }
-////                continue;
-////            }
-////            if (i == levels.length - 1) {
-////                path = path.get(levels[i]);
-////            }else {
-////                path = ((From)path).join(levels[i]);
-////            }
-////        }
-//
-//        // Resolve the path with EXISTS
-//
-////        Predicate predicate = criteriaBuilder.conjunction();
-//
-//        for (SpecSearchCriteria criteria : params) {
-//            switch (criteria.getOperation()) {
-//                case EQUALITY:
-////                    predicate = criteriaBuilder.equal(criteria.getKey(), criteria.getValue());
-//                    break;
-//                case GREATER_THAN:
-////                    predicate = criteriaBuilder.greaterThan(criteria.getKey(), criteria.getValue().toString());
-//                    break;
-//                case GREATER_OR_EQUALS:
-////                    predicate = criteriaBuilder.greaterThanOrEqualTo(criteria.getKey(), criteria.getValue().toString());
-//                    break;
-//                case LESS_OR_EQUALS:
-////                    predicate = criteriaBuilder.lessThanOrEqualTo(criteria.getKey(), criteria.getValue().toString());
-//                    break;
-//                case LESS_THAN:
-////                    predicate = criteriaBuilder.lessThan(criteria.getKey(), criteria.getValue().toString());
-//                    break;
-//                default:
-////                    predicate = null;
-//            }
-//        }
-////        query.where(predicate);
-//
-//        query.distinct(true); // Remove duplicates
-//
-//        return null;
-//    }
     public static Map<String, List<SpecSearchCriteria>> grouping(MultiValueMap<String, String> parameters){
         List<SpecSearchCriteria> readySpecs = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
