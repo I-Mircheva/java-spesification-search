@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ public class CustomerController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/customers")
     @ResponseBody
-    public List<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters) {
-        return repository.findAll(PredicateFactory.build(parameters)); // TODO Pagable
+    public Page<Customer> findAllBySpecification(@RequestParam MultiValueMap<String, String> parameters, Pageable pageable) {
+        return repository.findAll(PredicateFactory.build(parameters), pageable); // TODO Pageable
 //                CustomerSpecificationFactory.build(SearchCriteriaFactory.build(parameters)));
     }
 

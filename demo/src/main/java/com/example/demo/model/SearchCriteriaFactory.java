@@ -17,7 +17,7 @@ public class SearchCriteriaFactory {
     public static SpecSearchCriteria build(String key, List<String> value) {
         Map.Entry<String,SearchOperation> keyAndMarker = keyAndMarkerGeneration(key);
         if(keyAndMarker.getValue() != null) {
-//            return new SpecSearchCriteria(keyAndMarker.getKey(), keyAndMarker.getValue(), value.get(0)); //removed Integer.valueOf(value.get(0))
+            return new SpecSearchCriteria("pets", keyAndMarker.getKey(), keyAndMarker.getValue(), value.get(0)); //removed Integer.valueOf(value.get(0))
         }
         return null;
     }

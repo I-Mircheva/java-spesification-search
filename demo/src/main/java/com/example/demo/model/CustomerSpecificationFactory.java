@@ -1,7 +1,8 @@
 package com.example.demo.model;
 
 import org.springframework.data.jpa.domain.Specification;
-import javax.persistence.criteria.*;
+
+import javax.persistence.criteria.Join;
 import java.util.List;
 
 public class CustomerSpecificationFactory {
