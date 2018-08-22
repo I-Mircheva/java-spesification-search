@@ -1,7 +1,10 @@
 package com.example.demo.model;
 
-import com.querydsl.core.types.Predicate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.MultiValueMap;
+
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import java.util.*;
 
 import java.util.stream.Collectors;
@@ -18,7 +21,7 @@ public class PredicateFactory {
         }
     }
 
-    public static Predicate build(MultiValueMap<String, String> parameters){
+    public static Specification<Customer> build(MultiValueMap<String, String> parameters){
 
         List<SpecSearchCriteria> readySpecs = new ArrayList<>();
 
@@ -29,7 +32,7 @@ public class PredicateFactory {
             String[] pathKeyAndOperation = entry.getKey().split("-");
 
             // [ pets.name ] becomes (hopefully) [ pets ] [ name ]
-            List<String> list = new ArrayList<>(Arrays.asList(pathKeyAndOperation[0].split(".")));
+            List<String> list = new ArrayList<>(Arrays.asList(pathKeyAndOperation[0].split("\\.")));
 
             int indexOfKey = list.size() - 1;
             // key is [ name ]
@@ -38,16 +41,39 @@ public class PredicateFactory {
             // Join the path to use later with "." delimiter
             String path = String.join(".", list);
 
-            System.out.println(path);
-
             SpecSearchCriteria singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue());
             readySpecs.add(singleSpec);
         }
 
-//        Map<String, List<SpecSearchCriteria>> searchCriteriaListGroupedByPath = readySpecs.stream().collect(Collectors.groupingBy(SpecSearchCriteria::getJoinPath));
+        Map<String, List<SpecSearchCriteria>> searchCriteriaListGroupedByPath = readySpecs.stream().collect(
+                Collectors.groupingBy(SpecSearchCriteria::getJoinPath)
+        );
+
+//        readySpecs.
+
+        Specification<Customer> result = null;
+
+        for(List<SpecSearchCriteria> one : searchCriteriaListGroupedByPath.values()) {
+            result = Specification.where(result)
+                    .and(groupSpec(one));
+        }
+
+        return result;
+    }
+
+    public static Specification<Customer> groupSpec(List<SpecSearchCriteria> groupedSpecs) {
 
 
-        return null;
+        Specification<Customer> spec = (Specification<Customer>) (root, query, criteriaBuilder) -> {
+//                select c.*
+//                from customer c inner join pet p on p.customer_id = c.id
+//                where p.type = 'Cat'
+//                and p.name = 'Joki'
+
+            Join<Customer, Pet> ys = root.join("pets");
+            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
+        };
+        return spec;
     }
 
 
