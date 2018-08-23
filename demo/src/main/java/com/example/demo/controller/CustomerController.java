@@ -1,8 +1,9 @@
 package com.example.demo.controller;
 
+import com.example.demo.factory.PredicateFactory;
 import com.example.demo.model.*;
+import com.example.demo.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;

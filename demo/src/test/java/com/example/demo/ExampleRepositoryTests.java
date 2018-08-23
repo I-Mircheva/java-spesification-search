@@ -1,18 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.model.*;
+import com.example.demo.repository.CustomerRepository;
 import org.junit.*;
 import org.junit.runner.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.*;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

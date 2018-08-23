@@ -1,5 +1,8 @@
-package com.example.demo.model;
+package com.example.demo.factory;
 
+import com.example.demo.model.Customer;
+import com.example.demo.model.SearchOperation;
+import com.example.demo.model.SpecSearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.MultiValueMap;
 
