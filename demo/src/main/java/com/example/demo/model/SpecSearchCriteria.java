@@ -7,9 +7,7 @@ public class SpecSearchCriteria {
     private SearchOperation operation;
     private Object value;
 
-    public SpecSearchCriteria() {
-
-    }
+    public SpecSearchCriteria() {}
 
     public SpecSearchCriteria(final String joinPath, final String key, final SearchOperation operation, final Object value) {
         super();

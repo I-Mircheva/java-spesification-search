@@ -4,9 +4,6 @@ import com.example.demo.model.Customer;
 import com.example.demo.model.SearchOperation;
 import com.example.demo.model.SpecSearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.util.MultiValueMap;
-
-import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -23,7 +20,7 @@ public class PredicateFactory {
         }
     }
 
-    public static Specification<Customer> build(MultiValueMap<String, String> parameters){
+    public static Specification<Customer> build(Map<String, String> parameters){
 
         Collection<List<SpecSearchCriteria>> one = grouping(parameters).values();
         Specification<Customer> result = groupSpec(one.iterator().next());
@@ -80,14 +77,19 @@ public class PredicateFactory {
                 resultFull = criteriaBuilder.and(resultFull,result);
             }
         }
+        query.distinct(true);
         return resultFull;
 
     }
 
 
-    public static Map<String, List<SpecSearchCriteria>> grouping(MultiValueMap<String, String> parameters){
+    public static Map<String, List<SpecSearchCriteria>> grouping(Map<String, String> parameters){
         List<SpecSearchCriteria> readySpecs = new ArrayList<>();
-        for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key1 = entry.getKey();
+            if(key1.equals("page") || key1.equals("sort") || key1.equals("size")) {
+                continue;
+            }
 
             // [ pets.name-EQ ] becomes (hopefully) [ pets.name ] [ EQ ]
             String[] pathKeyAndOperation = entry.getKey().split("-");
@@ -102,14 +104,21 @@ public class PredicateFactory {
             // Join the path to use later with "." delimiter
             String path = String.join(".", list);
 
-            SpecSearchCriteria singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue().get(0));
+            SpecSearchCriteria singleSpec;
+
+            if(pathKeyAndOperation.length < 2) {
+                singleSpec = new SpecSearchCriteria(path, key, SearchOperation.EQUALITY, entry.getValue());
+            } else {
+                singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue());
+            }
+
+
             readySpecs.add(singleSpec);
         }
 
-        Map<String, List<SpecSearchCriteria>> searchCriteriaListGroupedByPath = readySpecs.stream().collect(
+        return readySpecs.stream().collect(
                 Collectors.groupingBy(SpecSearchCriteria::getJoinPath)
         );
-        return searchCriteriaListGroupedByPath;
     }
 }
 

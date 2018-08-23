@@ -13,26 +13,26 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-//@AutoConfigureMockMvc
-//public class MockMvcExampleTests {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+public class MockMvcExampleTests {
 
-//    @Autowired
-//    private MockMvc mvc;
+    @Autowired
+    private MockMvc mvc;
 
-//    @Test
-//    public void exampleSearchPetsByWeight() throws Exception {
-//        this.mvc.perform(get("/customers?pets_weight=3")).andExpect(status().isOk())
-//                .andExpect(content().string(
-//                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"},{\"id\":4,\"name\":\"Jacob\",\"weight\":13,\"type\":\"Cat\"},{\"id\":5,\"name\":\"Koko\",\"weight\":10,\"type\":\"Mouse\"},{\"id\":6,\"name\":\"Sony\",\"weight\":9,\"type\":\"Snake\"}]}]"));
-//    }
-//    @Test
-//    public void exampleSearchPetsByWeightAndCustomerByName() throws Exception {
-//        this.mvc.perform(get("/customers?firstName=Jack&pets_weight=9")).andExpect(status().isOk())
-//                .andExpect(content().string(
-//                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"},{\"id\":4,\"name\":\"Jacob\",\"weight\":13,\"type\":\"Cat\"},{\"id\":5,\"name\":\"Koko\",\"weight\":10,\"type\":\"Mouse\"},{\"id\":6,\"name\":\"Sony\",\"weight\":9,\"type\":\"Snake\"}]}]"));
-//    }
+    @Test
+    public void exampleSearchPetsByWeight() throws Exception {
+        this.mvc.perform(get("/customers?pets.weight=3")).andExpect(status().isOk())
+                .andExpect(content().string(
+                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"},{\"id\":4,\"name\":\"Jacob\",\"weight\":13,\"type\":\"Cat\"},{\"id\":5,\"name\":\"Koko\",\"weight\":10,\"type\":\"Mouse\"},{\"id\":6,\"name\":\"Sony\",\"weight\":9,\"type\":\"Snake\"}]}]"));
+    }
+    @Test
+    public void exampleSearchPetsByWeightAndCustomerByName() throws Exception {
+        this.mvc.perform(get("/customers?firstName=Jack&pets.weight=9")).andExpect(status().isOk())
+                .andExpect(content().string(
+                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"},{\"id\":4,\"name\":\"Jacob\",\"weight\":13,\"type\":\"Cat\"},{\"id\":5,\"name\":\"Koko\",\"weight\":10,\"type\":\"Mouse\"},{\"id\":6,\"name\":\"Sony\",\"weight\":9,\"type\":\"Snake\"}]}]"));
+    }
 
 
-//}
+}
