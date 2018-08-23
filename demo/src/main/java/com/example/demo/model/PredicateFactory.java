@@ -41,8 +41,14 @@ public class PredicateFactory {
     private static Predicate buildSpec(Root<Customer> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, List<SpecSearchCriteria> groupedSpecs) {
 
         Predicate result = null;
-        Path path = root.join(groupedSpecs.get(0).getJoinPath());
         Predicate resultFull = null;
+
+        Path path;
+
+        if(!groupedSpecs.get(0).getJoinPath().isEmpty())
+            path = root.join(groupedSpecs.get(0).getJoinPath());
+        else
+            path = root;
 
         for(SpecSearchCriteria one : groupedSpecs) {
             
@@ -68,7 +74,8 @@ public class PredicateFactory {
 
             resultFull = criteriaBuilder.and(resultFull,result);
         }
-        return result;
+        return resultFull;
+
     }
 
 
