@@ -22,12 +22,12 @@ public class PredicateFactory {
 
     public static Specification<Customer> build(MultiValueMap<String, String> parameters){
 
+        Collection<List<SpecSearchCriteria>> one = grouping(parameters).values();
+        Specification<Customer> result = groupSpec(one.iterator().next());
 
-        Specification<Customer> result = null;
-
-        for(List<SpecSearchCriteria> one : grouping(parameters).values()) {
+        for(List<SpecSearchCriteria> singleGroupSpec : one) {
             result = Specification.where(result)
-                    .and(groupSpec(one));
+                    .and(groupSpec(singleGroupSpec));
         }
 
         return result;
@@ -35,49 +35,34 @@ public class PredicateFactory {
 
 
     public static Specification<Customer> groupSpec(List<SpecSearchCriteria> groupedSpecs) {
+        return (Specification<Customer>) (root, query, criteriaBuilder) -> buildSpec(root, query, criteriaBuilder, groupedSpecs);
+    }
 
-        EntityManager entityManager = Persistence.createEntityManagerFactory("kote").createEntityManager();
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
-        Root<Customer> customer = cq.from(Customer.class);
+    private static Predicate buildSpec(Root<Customer> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, List<SpecSearchCriteria> groupedSpecs) {
 
-        String[] levels = groupedSpecs.get(0).getJoinPath().split("\\.");
-        Path path = null;
-        for(int i = 0; i < levels.length; i++) {
-            if(path == null) {
-                if(i == levels.length-1){
-                    path = customer.get(levels[i]);
-                } else {
-                    path = customer.join(levels[i]);
-                }
-                continue;
-            }
-            if (i == levels.length - 1) {
-                path = path.get(levels[i]);
-            }else {
-                path = ((From)path).join(levels[i]);
-            }
-        }
+        Predicate result = null;
+        Path path = root.join(groupedSpecs.get(0).getJoinPath());
 
+        for(SpecSearchCriteria one : groupedSpecs) {
 
-        Specification<Customer> spec = (Specification<Customer>) (root, query, criteriaBuilder) -> {
-//                select c.*
-//                from customer c inner join pet p on p.customer_id = c.id
-//                where p.type = 'Cat'
-//                and p.name = 'Joki'
-
-//            Join<Customer, Pet> ys = root.join("pets");
-//            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
+            Join<Customer, Pet> ys = root.join("pets");
+            //            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
 
             Subquery<Pet> subquery = query.subquery(Pet.class);
             Root<Pet> subqueryRoot = subquery.from(Pet.class);
+
             subquery.select(subqueryRoot);
-            Predicate userIdPredicate = criteriaBuilder.equal(subqueryRoot.get("userId"), root.<String> get("login"));
+
+            Predicate userIdPredicate = criteriaBuilder.equal(path2.get("userId"), root.<String> get("login"));
             Predicate rolePredicate = criteriaBuilder.equal(subqueryRoot.get("roleId"), "op");
+
             subquery.select(subqueryRoot).where(userIdPredicate, rolePredicate);
-            return criteriaBuilder.exists(subquery);
-        };
-        return spec;
+
+            criteriaBuilder.exists(subquery);
+            result = Specification.where(result)
+                    .and(spec);
+        }
+        return result;
     }
 
 
