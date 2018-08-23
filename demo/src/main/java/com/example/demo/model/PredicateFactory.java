@@ -40,18 +40,18 @@ public class PredicateFactory {
 
     private static Predicate buildSpec(Root<Customer> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder, List<SpecSearchCriteria> groupedSpecs) {
 
-        Predicate result = null;
+        Predicate result;
         Predicate resultFull = null;
 
         Path path;
 
-        if(!groupedSpecs.get(0).getJoinPath().isEmpty())
+        if(!groupedSpecs.get(0).getJoinPath().isEmpty()) {
             path = root.join(groupedSpecs.get(0).getJoinPath());
-        else
+        } else {
             path = root;
+        }
 
         for(SpecSearchCriteria one : groupedSpecs) {
-            
             switch (one.getOperation()) {
                 case EQUALITY:
                     result = criteriaBuilder.equal(path.get(one.getKey()), one.getValue());
@@ -71,8 +71,11 @@ public class PredicateFactory {
                 default:
                     result = null;
             }
-
-            resultFull = criteriaBuilder.and(resultFull,result);
+            if(resultFull == null) {
+                resultFull = result;
+            } else {
+                resultFull = criteriaBuilder.and(resultFull,result);
+            }
         }
         return resultFull;
 
@@ -96,9 +99,7 @@ public class PredicateFactory {
             // Join the path to use later with "." delimiter
             String path = String.join(".", list);
 
-            System.out.println(pathKeyAndOperation.length);
-
-            SpecSearchCriteria singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue());
+            SpecSearchCriteria singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue().get(0));
             readySpecs.add(singleSpec);
         }
 
