@@ -42,25 +42,31 @@ public class PredicateFactory {
 
         Predicate result = null;
         Path path = root.join(groupedSpecs.get(0).getJoinPath());
+        Predicate resultFull = null;
 
         for(SpecSearchCriteria one : groupedSpecs) {
+            
+            switch (one.getOperation()) {
+                case EQUALITY:
+                    result = criteriaBuilder.equal(path.get(one.getKey()), one.getValue());
+                    break;
+                case GREATER_THAN:
+                    result = criteriaBuilder.greaterThan(path.get(one.getKey()), one.getValue().toString());
+                    break;
+                case GREATER_OR_EQUALS:
+                    result = criteriaBuilder.greaterThanOrEqualTo(path.get(one.getKey()), one.getValue().toString());
+                    break;
+                case LESS_OR_EQUALS:
+                    result = criteriaBuilder.lessThanOrEqualTo(path.get(one.getKey()), one.getValue().toString());
+                    break;
+                case LESS_THAN:
+                    result = criteriaBuilder.lessThan(path.get(one.getKey()), one.getValue().toString());
+                    break;
+                default:
+                    result = null;
+            }
 
-            Join<Customer, Pet> ys = root.join("pets");
-            //            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
-
-            Subquery<Pet> subquery = query.subquery(Pet.class);
-            Root<Pet> subqueryRoot = subquery.from(Pet.class);
-
-            subquery.select(subqueryRoot);
-
-            Predicate userIdPredicate = criteriaBuilder.equal(path2.get("userId"), root.<String> get("login"));
-            Predicate rolePredicate = criteriaBuilder.equal(subqueryRoot.get("roleId"), "op");
-
-            subquery.select(subqueryRoot).where(userIdPredicate, rolePredicate);
-
-            criteriaBuilder.exists(subquery);
-            result = Specification.where(result)
-                    .and(spec);
+            resultFull = criteriaBuilder.and(resultFull,result);
         }
         return result;
     }
