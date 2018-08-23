@@ -3,9 +3,7 @@ package com.example.demo.model;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.MultiValueMap;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import javax.persistence.criteria.*;
 import java.util.*;
 
@@ -13,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class PredicateFactory {
 
-    private static SpecSearchCriteria criteria;
 
     private static final Map<String, SearchOperation> operations = new HashMap<>();
 
@@ -39,10 +36,8 @@ public class PredicateFactory {
 
     public static Specification<Customer> groupSpec(List<SpecSearchCriteria> groupedSpecs) {
 
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("kote");
-        EntityManager em = emf.createEntityManager();
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+        EntityManager entityManager = Persistence.createEntityManagerFactory("kote").createEntityManager();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
         Root<Customer> customer = cq.from(Customer.class);
 
@@ -71,8 +66,16 @@ public class PredicateFactory {
 //                where p.type = 'Cat'
 //                and p.name = 'Joki'
 
-            Join<Customer, Pet> ys = root.join("pets");
-            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
+//            Join<Customer, Pet> ys = root.join("pets");
+//            return criteriaBuilder.and(criteriaBuilder.equal(ys.get("type"), "Bird"), criteriaBuilder.equal(ys.get("name"), "Joki"));
+
+            Subquery<Pet> subquery = query.subquery(Pet.class);
+            Root<Pet> subqueryRoot = subquery.from(Pet.class);
+            subquery.select(subqueryRoot);
+            Predicate userIdPredicate = criteriaBuilder.equal(subqueryRoot.get("userId"), root.<String> get("login"));
+            Predicate rolePredicate = criteriaBuilder.equal(subqueryRoot.get("roleId"), "op");
+            subquery.select(subqueryRoot).where(userIdPredicate, rolePredicate);
+            return criteriaBuilder.exists(subquery);
         };
         return spec;
     }
@@ -94,6 +97,8 @@ public class PredicateFactory {
 
             // Join the path to use later with "." delimiter
             String path = String.join(".", list);
+
+            System.out.println(pathKeyAndOperation.length);
 
             SpecSearchCriteria singleSpec = new SpecSearchCriteria(path, key, operations.get(pathKeyAndOperation[1]), entry.getValue());
             readySpecs.add(singleSpec);

@@ -1,0 +1,6 @@
+<persistence-unit name="kote">
+    <class>com.example.demo.model.PredicateFactory</class>
+    <properties>
+        <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)"/>
+    </properties>
+</persistence-unit>
