@@ -22,7 +22,11 @@ public class PredicateFactory {
 
     public static Specification<Customer> build(Map<String, String> parameters){
 
+        if(parameters.isEmpty())return null;
+
         Collection<List<SpecSearchCriteria>> one = grouping(parameters).values();
+        if(one.isEmpty())return null;
+
         Specification<Customer> result = groupSpec(one.iterator().next());
 
         for(List<SpecSearchCriteria> singleGroupSpec : one) {
