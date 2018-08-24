@@ -53,7 +53,7 @@ public class MockMvcExampleTests {
         repository.deleteAll();
         List<Customer> resultList = new ArrayList<>();
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Bok", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
@@ -63,7 +63,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloen", "Brian", 13L);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -112,7 +112,7 @@ public class MockMvcExampleTests {
 
         List<Customer> resultList = new ArrayList<>();
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jacku", "Bauer", 12L);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Bok", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
@@ -124,7 +124,7 @@ public class MockMvcExampleTests {
         {
             Customer customer2 = new Customer("Chloe", "Brian", 13L);
             ArrayList<Pet> pets = new ArrayList<>();
-            pets.add(new Pet("Joki", 10, "Snake"));
+            pets.add(new Pet("Jok", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
             customer2.setPets(pets);
             repository.save(customer2);
