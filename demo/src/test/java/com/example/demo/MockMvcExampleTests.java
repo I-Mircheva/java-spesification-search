@@ -3,6 +3,9 @@ package com.example.demo;
 import com.example.demo.model.Customer;
 import com.example.demo.model.Pet;
 import com.example.demo.repository.CustomerRepository;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,13 +37,15 @@ public class MockMvcExampleTests {
     @Test
     public void exampleSearchNothing() throws Exception {
         repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
         {
             Customer customer1 = new Customer("Jack", "Bauer", 12L);
             ArrayList<Pet> pets = new ArrayList<>();
-            pets.add(new Pet("Boki", 130, "Dragon"));
+            pets.add(new Pet("Bok", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
             customer1.setPets(pets);
             repository.save(customer1);
+            resultList.add(customer1);
         }
 
         {
@@ -48,6 +55,7 @@ public class MockMvcExampleTests {
             pets.add(new Pet("Sack", 77, "Cat"));
             customer2.setPets(pets);
             repository.save(customer2);
+            resultList.add(customer2);
         }
 
         {
@@ -58,6 +66,7 @@ public class MockMvcExampleTests {
             pets.add(new Pet("Sack", 5, "Cat"));
             customer3.setPets(pets);
             repository.save(customer3);
+            resultList.add(customer3);
         }
 
         {
@@ -67,6 +76,7 @@ public class MockMvcExampleTests {
             pets.add(new Pet("Ugly", 2, "Butterfly"));
             customer4.setPets(pets);
             repository.save(customer4);
+            resultList.add(customer4);
         }
 
         {
@@ -76,11 +86,24 @@ public class MockMvcExampleTests {
             pets.add(new Pet("Sack", 77, "Cat"));
             customer5.setPets(pets);
             repository.save(customer5);
+            resultList.add(customer5);
         }
-        this.mvc.perform(get("/customers")).andExpect(status().isOk())
-                .andExpect(content().string(
-                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"}]},{\"id\":7,\"age\":10,\"firstName\":\"Kim\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":8,\"name\":\"Joki\",\"weight\":1,\"type\":\"Bird\"},{\"id\":9,\"name\":\"Joki\",\"weight\":3,\"type\":\"Leopard\"},{\"id\":10,\"name\":\"Sack\",\"weight\":5,\"type\":\"Cat\"}]},{\"id\":14,\"age\":30,\"firstName\":\"Michelle\",\"lastName\":\"Dessler\",\"pets\":[{\"id\":15,\"name\":\"Jaki\",\"weight\":10,\"type\":\"Snake\"},{\"id\":16,\"name\":\"Sack\",\"weight\":77,\"type\":\"Cat\"}]},{\"id\":4,\"age\":13,\"firstName\":\"Chloe\",\"lastName\":\"Brian\",\"pets\":[{\"id\":5,\"name\":\"Joki\",\"weight\":10,\"type\":\"Snake\"},{\"id\":6,\"name\":\"Sack\",\"weight\":77,\"type\":\"Cat\"}]},{\"id\":11,\"age\":5,\"firstName\":\"David\",\"lastName\":\"Palmer\",\"pets\":[{\"id\":12,\"name\":\"Beauty\",\"weight\":1,\"type\":\"Caterpillar\"},{\"id\":13,\"name\":\"Ugly\",\"weight\":2,\"type\":\"Butterfly\"}]}]"));
+        run(resultList,"/customers");
+
     }
+
+    private void run(List<Customer> resultList, String s) throws Exception{
+        String response = this.mvc.perform(get(s)).andReturn().getResponse().getContentAsString();
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Customer>>() {}.getType();
+        List<Customer> responseList = gson.fromJson(response, listType);
+
+        for (Customer c : resultList) {
+            Assert.assertTrue(responseList.contains(c));
+        }
+        Assert.assertEquals(responseList.size(), resultList.size());
+    }
+
 
     @Test
     public void exampleSearchOnlyPaging() throws Exception {
@@ -94,27 +117,36 @@ public class MockMvcExampleTests {
     @Test
     public void exampleSearchPetsByWeight() throws Exception {
         repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
 
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Boki", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
             customer1.setPets(pets);
             repository.save(customer1);
+            resultList.add(customer1);
+
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloen", "Brian", 13L);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
             customer2.setPets(pets);
             repository.save(customer2);
         }
-        this.mvc.perform(get("/customers?pets.weight-GOE=78")).andExpect(status().isOk())
-                .andExpect(content().string(
-                        "[{\"id\":1,\"age\":12,\"firstName\":\"Jack\",\"lastName\":\"Bauer\",\"pets\":[{\"id\":2,\"name\":\"Boki\",\"weight\":130,\"type\":\"Dragon\"},{\"id\":3,\"name\":\"Jack\",\"weight\":87,\"type\":\"Dog\"}]}]"));
+        String response = this.mvc.perform(get("/customers?pets.weight-GOE=78")).andReturn().getResponse().getContentAsString();
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Customer>>() {}.getType();
+        List<Customer> responseList = gson.fromJson(response, listType);
+
+        for (Customer c : resultList) {
+            Assert.assertTrue(responseList.contains(c));
+        }
+        Assert.assertEquals(responseList.size(), resultList.size());
     }
 
     @Test
