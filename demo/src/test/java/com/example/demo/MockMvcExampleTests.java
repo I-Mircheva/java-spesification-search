@@ -53,7 +53,7 @@ public class MockMvcExampleTests {
         repository.deleteAll();
         List<Customer> resultList = new ArrayList<>();
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jack", "Bauer", 12L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Bok", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
@@ -63,7 +63,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloe", "Brian", 13L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -73,7 +73,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer3 = new Customer("Kim", "Bauer", 10L);
+            Customer customer3 = new Customer("Kim", "Bauer", 10L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 1, "Bird"));
             pets.add(new Pet("Joki", 3, "Leopard"));
@@ -84,7 +84,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer4 = new Customer("David", "Palmer", 5L);
+            Customer customer4 = new Customer("David", "Palmer", 5L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Beauty", 1, "Caterpillar"));
             pets.add(new Pet("Ugly", 2, "Butterfly"));
@@ -94,7 +94,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer5 = new Customer("Michelle", "Dessler", 30L);
+            Customer customer5 = new Customer("Michelle", "Dessler", 30L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Jaki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -112,7 +112,7 @@ public class MockMvcExampleTests {
 
         List<Customer> resultList = new ArrayList<>();
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jack", "Bauer", 12L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Bok", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
@@ -122,7 +122,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloe", "Brian", 13L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -136,12 +136,39 @@ public class MockMvcExampleTests {
     }
 
     @Test
+    public void exampleSearchCustomersByAge() throws Exception {
+        repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
+
+        {
+            Customer customer4 = new Customer("David", "Palmer", 5L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Beauty", 1, "Caterpillar"));
+            pets.add(new Pet("Ugly", 2, "Butterfly"));
+            customer4.setPets(pets);
+            repository.save(customer4);
+            resultList.add(customer4);
+        }
+
+        {
+            Customer customer5 = new Customer("Michelle", "Dessler", 30L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Jaki", 10, "Snake"));
+            pets.add(new Pet("Sack", 77, "Cat"));
+            customer5.setPets(pets);
+            repository.save(customer5);
+        }
+        run(resultList,"/customers?age-LT=24");
+
+    }
+
+    @Test
     public void exampleSearchPetsByWeight() throws Exception {
         repository.deleteAll();
         List<Customer> resultList = new ArrayList<>();
 
         {
-            Customer customer1 = new Customer("Jacky", "Bauer", 12L);
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Boki", 130, "Dragon"));
             pets.add(new Pet("Jack", 87, "Dog"));
@@ -152,7 +179,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloen", "Brian", 13L);
+            Customer customer2 = new Customer("Chloen", "Brian", 13L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Snake"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -170,7 +197,7 @@ public class MockMvcExampleTests {
         List<Customer> resultList2 = new ArrayList<>();
 
         {
-            Customer customer1 = new Customer("Jack", "Bauer", 12L);
+            Customer customer1 = new Customer("Jack", "Bauer", 12L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Boki", 130, "Dragon"));
             pets.add(new Pet("Joe", 87, "Dog"));
@@ -179,7 +206,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloe", "Brian", 13L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Developer"));
             pets.add(new Pet("Sack", 77, "Cat"));
@@ -200,7 +227,7 @@ public class MockMvcExampleTests {
         List<Customer> resultList2 = new ArrayList<>();
 
         {
-            Customer customer1 = new Customer("Jacky", "Bauer", 12L);
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Boki", 130, "Dragon"));
             pets.add(new Pet("Joe", 87, "Dog"));
@@ -209,7 +236,7 @@ public class MockMvcExampleTests {
         }
 
         {
-            Customer customer2 = new Customer("Chloe", "Brian", 13L);
+            Customer customer2 = new Customer("Chloe", "Brian", 13L,true);
             ArrayList<Pet> pets = new ArrayList<>();
             pets.add(new Pet("Joki", 10, "Developer"));
             pets.add(new Pet("Sacky", 77, "Cat"));
@@ -223,8 +250,88 @@ public class MockMvcExampleTests {
 
     }
 
+    @Test
+    public void exampleSearchDuplicatingParamsForPets() throws Exception {
+        repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
 
+        {
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Boki", 130, "Dragon"));
+            pets.add(new Pet("Jack", 87, "Dog"));
+            customer1.setPets(pets);
+            repository.save(customer1);
 
+        }
 
+        {
+            Customer customer2 = new Customer("Chloen", "Brian", 13L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Joki", 10, "Snake"));
+            pets.add(new Pet("Sack", 77, "Cat"));
+            customer2.setPets(pets);
+            repository.save(customer2);
+        }
+        run(resultList,"/customers?pets.weight-LOE=77&pets.weight-GOE=89");
+
+    }
+
+    @Test
+    public void exampleSearchDuplicatingParamsForCustomers() throws Exception {
+        repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
+
+        {
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Boki", 130, "Dragon"));
+            pets.add(new Pet("Jack", 87, "Dog"));
+            customer1.setPets(pets);
+            repository.save(customer1);
+            resultList.add(customer1);
+
+        }
+
+        {
+            Customer customer2 = new Customer("Chloen", "Brian", 13L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Joki", 10, "Snake"));
+            pets.add(new Pet("Sack", 77, "Cat"));
+            customer2.setPets(pets);
+            repository.save(customer2);
+            resultList.add(customer2);
+
+        }
+        run(resultList,"/customers?age-LOE=29&age-LOE=85");
+
+    }
+
+    @Test
+    public void exampleSearchDuplicatingParamsForPetsAndCust() throws Exception {
+        repository.deleteAll();
+        List<Customer> resultList = new ArrayList<>();
+
+        {
+            Customer customer1 = new Customer("Jacky", "Bauer", 12L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Boki", 130, "Dragon"));
+            pets.add(new Pet("Joe", 87, "Dog"));
+            customer1.setPets(pets);
+            repository.save(customer1);
+        }
+
+        {
+            Customer customer2 = new Customer("Chloe", "Brian", 13L,true);
+            ArrayList<Pet> pets = new ArrayList<>();
+            pets.add(new Pet("Joki", 10, "Developer"));
+            pets.add(new Pet("Sacky", 77, "Cat"));
+            customer2.setPets(pets);
+            repository.save(customer2);
+        }
+
+        run(resultList,"/customers?pets.weight-LT=87&pets.weight-GOE=87&age=13&age=12");
+
+    }
 
 }

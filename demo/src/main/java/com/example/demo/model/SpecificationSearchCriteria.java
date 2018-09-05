@@ -1,15 +1,15 @@
 package com.example.demo.model;
 
-public class SpecSearchCriteria {
+public class SpecificationSearchCriteria {
 
     private String joinPath;
     private String key;
     private SearchOperation operation;
     private Object value;
 
-    public SpecSearchCriteria() {}
+    public SpecificationSearchCriteria() {}
 
-    public SpecSearchCriteria(final String joinPath, final String key, final SearchOperation operation, final Object value) {
+    public SpecificationSearchCriteria(final String joinPath, final String key, final SearchOperation operation, final Object value) {
         super();
         this.joinPath = joinPath;
         this.key = key;
@@ -42,6 +42,14 @@ public class SpecSearchCriteria {
     }
 
     public Object getValue() {
+        if(value != null) {
+            if ("true".equals(value.toString())) {
+                return Boolean.TRUE;
+            }
+            if("false".equals(value.toString())) {
+                return Boolean.FALSE;
+            }
+        }
         return value;
     }
 
